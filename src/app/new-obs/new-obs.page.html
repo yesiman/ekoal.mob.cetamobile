@@ -1,0 +1,125 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Nouvelle observation</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item-divider>
+      <ion-label>
+        Date d'observation
+      </ion-label>
+    </ion-item-divider>
+    <ion-item>
+      <ion-datetime-button  datetime="datetime"></ion-datetime-button>
+      <ion-modal [keepContentsMounted]="true">
+        <ng-template>
+          <ion-datetime  [(ngModel)]="obs.dateObs" id="datetime"></ion-datetime>
+        </ng-template>
+      </ion-modal>
+    </ion-item>
+    <ion-item-divider>
+      <ion-label>
+        Espèce
+      </ion-label>
+    </ion-item-divider>
+    <ion-item>
+      <ion-select placeholder="Selection" [(ngModel)]="obs.espece">
+        <ion-select-option value=""> </ion-select-option>
+        <ion-select-option title="3" value="Chelonia mydas (Tortue verte)">Chelonia mydas (Tortue verte) </ion-select-option>
+        <ion-select-option title="10" value="Eretmochelys imbricata (Tortue imbriquée)">Eretmochelys imbricata (Tortue imbriquée) </ion-select-option>
+        <ion-select-option title="4" value="Eubalaena australis (Baleine franche australe)">Eubalaena australis (Baleine franche australe)</ion-select-option>
+        <ion-select-option title="12" value="Globicephala melas (Globicéphale noir)">Globicephala melas (Globicéphale noir)</ion-select-option>
+        <ion-select-option title="13" value="Grampus griseus (Dauphins de Risso)">Grampus griseus (Dauphins de Risso)</ion-select-option>
+        <ion-select-option title="11" value="Lagenodelphis hosei (Dauphin de fraser)">Lagenodelphis hosei (Dauphin de fraser)</ion-select-option>
+        <ion-select-option title="2" value="Megaptera novaeangliae (Baleine à bosse)" >Megaptera novaeangliae (Baleine à bosse)</ion-select-option>
+        <ion-select-option title="5" value="Orcinus orca (Orque)">Orcinus orca (Orque) </ion-select-option>
+        <ion-select-option title="8" value="Sousa chinenses (Dauphin à bosse)">Sousa chinenses (Dauphin à bosse)</ion-select-option>
+        <ion-select-option title="9" value="Stenella attenuata (Dauphin tacheté)">Stenella attenuata (Dauphin tacheté) </ion-select-option>
+        <ion-select-option title="7" value="Stenella coeruleoalba (Dauphin bleu et blanc)">Stenella coeruleoalba (Dauphin bleu et blanc) </ion-select-option>
+        <ion-select-option title="6" value="Stenella longirostris (Dauphin à long bec)">Stenella longirostris (Dauphin à long bec) </ion-select-option>
+        <ion-select-option title="1" value="Tursiops aduncus (Grand dauphin Ocean Indien)">Tursiops aduncus (Grand dauphin Ocean Indien) </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item-divider>
+      <ion-label>
+        Type de groupe
+      </ion-label>
+    </ion-item-divider>
+    <ion-item>
+      <ion-select placeholder="Selection" [(ngModel)]="obs.typegroupe">
+        <ion-select-option value=""> </ion-select-option>
+        <ion-select-option title="3" value="AS_Solitary : 1 individual adult">AS_Solitary : 1 individual adult</ion-select-option>
+        <ion-select-option title="2" value="MCE_Mother Calf Escort : 3 individuals">MCE_Mother Calf Escort : 3 individuals</ion-select-option>
+        <ion-select-option title="7" value="MCEs_Mother Calf Escorts : Mother and Calf accompanied by more than 2 escorts">MCEs_Mother Calf Escorts : Mother and Calf accompanied by more than 2 escorts</ion-select-option>
+        <ion-select-option title="5" value="MC_Mother Calf : 2 individuals" >MC_Mother Calf : 2 individuals</ion-select-option>
+        <ion-select-option title="1" value="NCG_Non-Comptetitive Group">NCG_Non-Comptetitive Group</ion-select-option>
+        <ion-select-option title="12" value="OMM_Other Marine Mammals">OMM_Other Marine Mammals</ion-select-option>
+        <ion-select-option title="4" value="PA_Pair : 2 individuals adults">PA_Pair : 2 individuals adults</ion-select-option>
+        <ion-select-option title="11" value="PJA_Pair : 2 individuals juvenile and adult">PJA_Pair : 2 individuals juvenile and adult</ion-select-option>
+        <ion-select-option title="10" value="PJ_Pair : 2 individuals juvenile">PJ_Pair : 2 individuals juvenile</ion-select-option>
+        <ion-select-option title="6" value="SCG_ Surface Competitive Group : more than 3 individuals characterized by agressive behaviors">SCG_ Surface Competitive Group : more than 3 individuals characterized by agressive behaviors</ion-select-option>
+        <ion-select-option title="9" value="SJ_Solitary : 1 individual juvenile">SJ_Solitary : 1 individual juvenile</ion-select-option>
+      </ion-select>
+    </ion-item>
+    
+    <ion-item-divider>
+      <ion-label>
+        Coordonnées GPS
+      </ion-label>
+    </ion-item-divider>
+    <ion-item>
+      <ion-label>Latitude</ion-label>
+      <ion-input [(ngModel)]="obs.lat"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Longitude</ion-label>
+      <ion-input [(ngModel)]="obs.lng"></ion-input>
+    </ion-item>
+    <ion-button ion-item expand="block" (click)="getGeoloc()">Location</ion-button>
+    <ion-item-divider>
+      <ion-label>
+        Observation
+      </ion-label>
+    </ion-item-divider>
+    <ion-item>
+      <ion-select placeholder="Selection" [(ngModel)]="obs.observation">
+        <ion-select-option value="" selected="selected"> </ion-select-option>
+        <ion-select-option title="7" value="BE_Breaching">BE_Breaching</ion-select-option>
+        <ion-select-option title="11" value="BI_Birth">BI_Birth</ion-select-option>
+        <ion-select-option title="8" value="BL_Blowing">BL_Blowing</ion-select-option>
+        <ion-select-option title="1" value="CS_Caudal Slapping">CS_Caudal Slapping</ion-select-option>
+        <ion-select-option title="14" value="DI_Diving">DI_Diving</ion-select-option>
+        <ion-select-option title="5" value="JF_Jet Fluke">JF_Jet Fluke</ion-select-option>
+        <ion-select-option title="13" value="NU_Nursing">NU_Nursing</ion-select-option>
+        <ion-select-option title="3" value="PS_Pectoral Slapping">PS_Pectoral Slapping</ion-select-option>
+        <ion-select-option title="9" value="RE_Resting">RE_Resting</ion-select-option>
+        <ion-select-option title="4" value="RS_Rostrum Slapping">RS_Rostrum Slapping</ion-select-option>
+        <ion-select-option title="6" value="SH_Spy Hopping">SH_Spy Hopping</ion-select-option>
+        <ion-select-option title="15" value="SI_Singing">SI_Singing</ion-select-option>
+        <ion-select-option title="12" value="SL_Slepping">SL_Slepping</ion-select-option>
+        <ion-select-option title="2" value="ST_Stable Tail">ST_Stable Tail</ion-select-option>
+        <ion-select-option title="10" value="ST_Stranded">ST_Stranded</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-textarea [(ngModel)]="obs.observationdetails" placeholder="Saisissez vos détails ici..."></ion-textarea>
+    </ion-item>
+    <ion-item-divider>
+      Photo
+    </ion-item-divider>
+    <ion-img [src]="obs.imgSrc" style="height:120px;"></ion-img>
+    <ion-button  ion-item expand="block"  (click)="takePict()">Photo</ion-button>
+    <ion-item-divider>
+      
+    </ion-item-divider>
+    
+    
+      <ion-button ion-item size="large" expand="full" (click)="valid()">Valider</ion-button>
+    
+  </ion-list>
+</ion-content>
