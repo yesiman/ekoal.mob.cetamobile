@@ -8,6 +8,7 @@ import { Firestore, collection, collectionData, doc, docData,getDoc, addDoc, del
 import { getStorage, ref, uploadBytes,uploadString } from "firebase/storage";
 import { Device } from '@capacitor/device';
 import { Observable } from 'rxjs';
+import { uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
 
 @Component({
   selector: 'app-new-obs',
@@ -104,18 +105,6 @@ export class NewObsPage implements OnInit {
         filename:filename,
         ext:ext
       })
-      //
-      const storage = getStorage();
-      const storageRef = ref(storage, 'observations/'+filename+"."+ext)
-      fetch(image.webPath)
-      .then (res => res.blob()) // Gets the response and returns it as a blob
-      .then (blob => {
-        uploadBytes(storageRef, blob).then((snapshot) => {
-          console.log('Uploaded a blob or file!');
-        });
-    });
-
-      
     };
     addPict();
   }
@@ -138,18 +127,82 @@ export class NewObsPage implements OnInit {
     if (this.obs.animaux) { this.obs.animaux = this.obs.animaux.replace(/(["])/g,'&quot;') }
 
     const notesRef = collection(this.firestore, "devices/"+this.uuid+"/observations/");
-    if (this.updateMode == true) {
-      //MAJ RECORD
-      const docRef = doc(this.firestore, "devices/"+this.uuid+"/observations/"+this.id);
-      updateDoc(docRef, this.obs).then(() => {
-        // the documentReference provides access to the newly created document
-      });
-    }else {
-      //ADD RECORD
-      addDoc(notesRef, this.obs).then((documentReference: DocumentReference) => {
-        // the documentReference provides access to the newly created document
+    const storage = getStorage();
+    //UPLOAD IMAGES PUIS SAVE OBJ
+    for (let reliFiles = 0;reliFiles <= this.obs.images.length;reliFiles++) 
+    {
+      var fileToU = this.obs.images[reliFiles];
+      
+      const storageRef = ref(storage, 'observations/'+fileToU.filename+"."+fileToU.ext)
+        fetch(fileToU.webPath)
+        .then (res => res.blob()) // Gets the response and returns it as a blob
+        .then (blob => {
+          const uploadTask = uploadBytesResumable(storageRef, blob);
+          // Listen for state changes, errors, and completion of the upload.
+          uploadTask.on('state_changed',
+          (snapshot) => {
+            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload is ' + progress + '% done');
+            switch (snapshot.state) {
+              case 'paused':
+                console.log('Upload is paused');
+                break;
+              case 'running':
+                console.log('Upload is running');
+                break;
+            }
+          }, 
+          (error) => {
+            // A full list of error codes is available at
+            // https://firebase.google.com/docs/storage/web/handle-errors
+            switch (error.code) {
+              case 'storage/unauthorized':
+                // User doesn't have permission to access the object
+                break;
+              case 'storage/canceled':
+                // User canceled the upload
+                break;
+
+              // ...
+
+              case 'storage/unknown':
+                // Unknown error occurred, inspect error.serverResponse
+                break;
+            }
+          }, 
+          () => {
+            // Upload completed successfully, now we can get the download URL
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              console.log(this.obs[reliFiles],reliFiles);
+              this.obs.images[reliFiles].url = downloadURL;
+              let allUp = true;
+              for (var reliFilesUp = 0;reliFilesUp <= this.obs.images.length;reliFilesUp++) 
+              {
+                if (!this.obs[reliFilesUp].url) {
+                  allUp = false;
+                }
+              }
+              if (allUp == true) {
+                if (this.updateMode == true) {
+                  //MAJ RECORD
+                  const docRef = doc(this.firestore, "devices/"+this.uuid+"/observations/"+this.id);
+                  updateDoc(docRef, this.obs).then(() => {
+                    // the documentReference provides access to the newly created document
+                  });
+                }else {
+                  //ADD RECORD
+                  addDoc(notesRef, this.obs).then((documentReference: DocumentReference) => {
+                    // the documentReference provides access to the newly created document
+                  });
+                }
+              }
+            });
+          });
       });
     }
+      
+    
     
     
 
