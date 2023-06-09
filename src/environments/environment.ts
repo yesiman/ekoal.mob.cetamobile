@@ -3,7 +3,16 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  firebase: {
+    apiKey: "AIzaSyD8GhZJF_bKRVbFEWK7Giv4y-aYqSt-iAo",
+    authDomain: "cetamada-9e985.firebaseapp.com",
+    projectId: "cetamada-9e985",
+    storageBucket: "cetamada-9e985.appspot.com",
+    messagingSenderId: "959915121175",
+    appId: "1:959915121175:web:7222f51ce7be8c7577da52",
+    measurementId: "G-B1MD3Z3QJ4"
+  }
 };
 
 /*
@@ -14,3 +23,27 @@ export const environment = {
  * on performance if an error is thrown.
  */
 // import 'zone.js/dist/zone-error';  // Included with Angular CLI.
+
+/*
+{
+  dateObs:Date,
+  espece:number,
+  determination:number,
+  sexe:number,
+  animalMort:number,
+  dateEchou:date,
+  dateRemf:date,
+  action:number,
+  circonst:number,
+  nomInform:string,
+  region:number,
+  district:number,
+  commune:number,
+  village:string,
+  lat:string,
+  long:string,
+  comments:string,
+  observ:string,
+  animaux:string,
+  images:[]
+}*/
