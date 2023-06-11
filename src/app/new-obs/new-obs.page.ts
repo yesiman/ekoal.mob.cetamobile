@@ -133,18 +133,20 @@ export class NewObsPage implements OnInit {
   managePicts(parentUid) {
     const cacheRef = collection(this.firestore, "devices/"+this.uuid+"/cache/");
     if (this.obs.images && (this.obs.images.length > 0)) {
-      for (var reliFiles = 0;reliFiles < this.obs.images.length;reliFiles++) 
+      for (let reliFiles = 0;reliFiles < this.obs.images.length;reliFiles++) 
       {
-        var curFile = this.obs.images[reliFiles];
-        console.log(curFile);
-        var cacheDatas = {
+        let curFile = this.obs.images[reliFiles];
+        console.log("curFile is",curFile);
+        let cacheDatas = {
           wPath:curFile.webPath,
           parentUid:parentUid,
           filename:curFile.filename,
           ext:curFile.ext,
+          cacheUid:""
         };
         //ajout dans le cache
         addDoc(cacheRef, cacheDatas).then((documentReference: DocumentReference) => {
+          cacheDatas.cacheUid = documentReference.id;
           this.uploadmanager.upload(cacheDatas);
         });
       }

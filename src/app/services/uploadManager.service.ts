@@ -27,6 +27,7 @@ export class uploadManager {
     }
 
     upload(data) {
+        console.log("data is",data);
         //SI UPLOAD OK VIDAGE CACHE
         const storageRef = ref(this.storage, 'observations/'+data.filename+"."+data.ext)
         fetch(data.wPath)
@@ -67,7 +68,6 @@ export class uploadManager {
             // Upload completed successfully, now we can get the download URL
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                 //on update le parent
-                console.log(data);
                 const docRef = doc(this.firestore, "devices/"+this.uuid+"/observations/"+data.parentUid);
                 const docSnap = getDoc(docRef).then((doc) => {
                     let obs = doc.data();
@@ -92,7 +92,7 @@ export class uploadManager {
         this.getCache().subscribe(res => {
             //webpath de limage
             //id du parent
-            console.log("res",res);    
+            //console.log("res",res);    
         });
     }
     getCache(): Observable<Object[]> {

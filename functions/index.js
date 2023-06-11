@@ -13,14 +13,12 @@ exports.replicateForFo = functions.firestore
     let doc = change.after.data();
     functions.logger.log("doc", doc);
     //CHECK SI TOUTES IMAGES SONT PRESENTES/UPLOADEES:AVEC URL
-    if (doc.images && (doc.images.length > 0)) {
-      for (let reliFiles = 0;reliFiles <= doc.images.length;reliFiles++) 
-      {
-        if (!doc.images[reliFiles].url) {
-          return new Promise((resolve, reject) => {
-            resolve("Not all urls presence");
-          });
-        }
+    for (let reliFiles = 0;reliFiles <= doc.images.length;reliFiles++) 
+    {
+      if (!doc.images[reliFiles].url) {
+        return new Promise((resolve, reject) => {
+          resolve("Not all urls presence");
+        });
       }
     }
     //SI URLs ON ENVOIE SUR SERVEUR BO
