@@ -9,6 +9,7 @@ import { getStorage, ref, uploadBytes,uploadString } from "firebase/storage";
 import { Device } from '@capacitor/device';
 import { Observable } from 'rxjs';
 import { uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
+import { uploadManager } from '../services/uploadManager.service';
 
 @Component({
   selector: 'app-new-obs',
@@ -23,7 +24,7 @@ export class NewObsPage implements OnInit {
   private id:number;
 
   public enums;
-  constructor(private router: Router,private firestore: Firestore,private activatedRoute: ActivatedRoute) {
+  constructor(private router: Router,private firestore: Firestore,private activatedRoute: ActivatedRoute, private uploadmanager:uploadManager) {
     
   }
   loadDeviceInfo = async () => {
@@ -68,19 +69,6 @@ export class NewObsPage implements OnInit {
     }
   }
 
- /*
-  dataURLtoFile(dataurl, filename) {
-    let arr = dataurl.split(','),
-        mime = arr[0].match(/:(.*?);/)[1],
-        bstr = atob(arr[1]),
-        n = bstr.length,
-        u8arr = new Uint8Array(n);
-    while (n--) {
-        u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new File([u8arr], filename, {type: mime});
-}
-*/
   //AJOUT D'UNE IMAGE/PHOTO
   takePict()  { 
     if (!this.obs.images) {
@@ -125,90 +113,47 @@ export class NewObsPage implements OnInit {
     if (this.obs.comments) { this.obs.comments = this.obs.comments.replace(/(["])/g,'&quot;') }
     if (this.obs.observ) { this.obs.observ = this.obs.observ.replace(/(["])/g,'&quot;') }
     if (this.obs.animaux) { this.obs.animaux = this.obs.animaux.replace(/(["])/g,'&quot;') }
-
-    const notesRef = collection(this.firestore, "devices/"+this.uuid+"/observations/");
-    const storage = getStorage();
-    //UPLOAD IMAGES PUIS SAVE OBJ
-    for (let reliFiles = 0;reliFiles <= this.obs.images.length;reliFiles++) 
-    {
-      var fileToU = this.obs.images[reliFiles];
-      
-      const storageRef = ref(storage, 'observations/'+fileToU.filename+"."+fileToU.ext)
-        fetch(fileToU.webPath)
-        .then (res => res.blob()) // Gets the response and returns it as a blob
-        .then (blob => {
-          const uploadTask = uploadBytesResumable(storageRef, blob);
-          // Listen for state changes, errors, and completion of the upload.
-          uploadTask.on('state_changed',
-          (snapshot) => {
-            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log('Upload is ' + progress + '% done');
-            switch (snapshot.state) {
-              case 'paused':
-                console.log('Upload is paused');
-                break;
-              case 'running':
-                console.log('Upload is running');
-                break;
-            }
-          }, 
-          (error) => {
-            // A full list of error codes is available at
-            // https://firebase.google.com/docs/storage/web/handle-errors
-            switch (error.code) {
-              case 'storage/unauthorized':
-                // User doesn't have permission to access the object
-                break;
-              case 'storage/canceled':
-                // User canceled the upload
-                break;
-
-              // ...
-
-              case 'storage/unknown':
-                // Unknown error occurred, inspect error.serverResponse
-                break;
-            }
-          }, 
-          () => {
-            // Upload completed successfully, now we can get the download URL
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              console.log(this.obs[reliFiles],reliFiles);
-              this.obs.images[reliFiles].url = downloadURL;
-              let allUp = true;
-              for (var reliFilesUp = 0;reliFilesUp <= this.obs.images.length;reliFilesUp++) 
-              {
-                if (!this.obs[reliFilesUp].url) {
-                  allUp = false;
-                }
-              }
-              if (allUp == true) {
-                if (this.updateMode == true) {
-                  //MAJ RECORD
-                  const docRef = doc(this.firestore, "devices/"+this.uuid+"/observations/"+this.id);
-                  updateDoc(docRef, this.obs).then(() => {
-                    // the documentReference provides access to the newly created document
-                  });
-                }else {
-                  //ADD RECORD
-                  addDoc(notesRef, this.obs).then((documentReference: DocumentReference) => {
-                    // the documentReference provides access to the newly created document
-                  });
-                }
-              }
-            });
-          });
+    
+    if (this.updateMode == true) {
+      //MAJ RECORD
+      const docRef = doc(this.firestore, "devices/"+this.uuid+"/observations/"+this.id);
+      updateDoc(docRef, this.obs).then(() => {
+        this.managePicts(this.id);
+      });
+    }else {
+      //ADD RECORD
+      const notesRef = collection(this.firestore, "devices/"+this.uuid+"/observations/");
+      addDoc(notesRef, this.obs).then((documentReference: DocumentReference) => {
+        this.managePicts(documentReference.id);
       });
     }
-      
-    
-    
-    
-
-    //ON PART SUR LA LISTE DES OBS
-    this.router.navigate(['/folder/Inbox'],{replaceUrl: true})
   };
+  //ENVOI 
+  // IMAGES PUIS SAVE OBJ
+  managePicts(parentUid) {
+    const cacheRef = collection(this.firestore, "devices/"+this.uuid+"/cache/");
+    if (this.obs.images && (this.obs.images.length > 0)) {
+      for (var reliFiles = 0;reliFiles < this.obs.images.length;reliFiles++) 
+      {
+        var curFile = this.obs.images[reliFiles];
+        console.log(curFile);
+        var cacheDatas = {
+          wPath:curFile.webPath,
+          parentUid:parentUid,
+          filename:curFile.filename,
+          ext:curFile.ext,
+        };
+        //ajout dans le cache
+        addDoc(cacheRef, cacheDatas).then((documentReference: DocumentReference) => {
+          this.uploadmanager.upload(cacheDatas);
+        });
+      }
+      this.router.navigate(['/folder/Inbox'],{replaceUrl: true})
+    }else {
+      this.router.navigate(['/folder/Inbox'],{replaceUrl: true})
+    }
+  }
+  //CHARGEMENT DES ENUMERATIONS DES LISTES
   getEnums(): Observable<Object[]> {
     const enumsRef = collection(this.firestore, 'enums');
     return collectionData(enumsRef, { idField: '_id'}) as Observable<Object[]>;

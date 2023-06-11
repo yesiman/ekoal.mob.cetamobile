@@ -14,6 +14,7 @@ import {  } from '@angular/fire';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { enableIndexedDbPersistence, getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getStorage, provideStorage } from '@angular/fire/storage';
+import { uploadManager } from './services/uploadManager.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -21,7 +22,7 @@ import { getStorage, provideStorage } from '@angular/fire/storage';
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage())],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },HTTP,FileTransfer,File],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },HTTP,FileTransfer,File,uploadManager],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
