@@ -1,0 +1,15 @@
+
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">Annuler</ion-button>
+    </ion-buttons>
+    <ion-title>Gestion de la localisation</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="confirm()" [strong]="true">Valider</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <capacitor-google-map #map style="display: inline-block;width: 100%;height: 100%;"></capacitor-google-map>
+</ion-content>

@@ -8,10 +8,9 @@ import { NewObsPageRoutingModule } from './new-obs-routing.module';
 
 import { NewObsPage } from './new-obs.page';
 
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+
 
 @NgModule({
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [
     CommonModule,
     FormsModule,

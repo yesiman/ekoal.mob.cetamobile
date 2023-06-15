@@ -16,9 +16,11 @@ import { enableIndexedDbPersistence, getFirestore, provideFirestore } from '@ang
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { uploadManager } from './services/uploadManager.service';
 import { datasManager } from './services/datas.service';
-
+import { ModalGmapComponent } from './new-obs/modal-gmap/modal-gmap.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 @NgModule({
-  declarations: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  declarations: [AppComponent, ModalGmapComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore()),

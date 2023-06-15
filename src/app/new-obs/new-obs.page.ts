@@ -1,43 +1,32 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Geolocation } from '@capacitor/geolocation';
 import { Camera, CameraResultType } from '@capacitor/camera';
-import { Preferences } from '@capacitor/preferences';
 import { Router,ActivatedRoute } from '@angular/router';
 import { v4 as uuidv4 } from 'uuid';
 import { Firestore, collection, collectionData, doc, docData,getDoc, addDoc, deleteDoc, updateDoc,DocumentReference } from '@angular/fire/firestore';
-import { getStorage, ref, uploadBytes,uploadString } from "firebase/storage";
-import { Device } from '@capacitor/device';
-import { Observable } from 'rxjs';
-import { uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
 import { uploadManager } from '../services/uploadManager.service';
 import { datasManager } from '../services/datas.service';
-import { GoogleMap, Marker } from '@capacitor/google-maps';
-import { CapacitorGoogleMaps } from '@capacitor/google-maps/dist/typings/implementation';
-import { IonModal, LoadingController } from '@ionic/angular';
-import { environment } from 'src/environments/environment';
+import { IonModal, LoadingController, ModalController } from '@ionic/angular'
 import { OverlayEventDetail } from '@ionic/core/components';
+import { ModalGmapComponent } from './modal-gmap/modal-gmap.component';
 @Component({
   selector: 'app-new-obs',
   templateUrl: './new-obs.page.html',
   styleUrls: ['./new-obs.page.scss'],
 })
 export class NewObsPage implements OnInit {
-  @ViewChild('map')
   @ViewChild(IonModal) modal: IonModal;
-  mapRef: ElementRef<HTMLElement>;
-  newMap: GoogleMap = null;
-  marker:Marker = null;
   selectedPage = "don";
-  markersIds = [];
   loading = null;
   name: string;
   private updateMode:boolean = false;
   private uuid = "";
   private obs:any = {};
+  private imageEdit:any = {};
   private id:number;
   public enums;
   constructor(private router: Router,private firestore: Firestore,private activatedRoute: ActivatedRoute, 
-    private uploadmanager:uploadManager, private datasmanager:datasManager,private loadingCtrl: LoadingController) {
+    private uploadmanager:uploadManager, private datasmanager:datasManager,private loadingCtrl: LoadingController,private modalCtrl: ModalController) {
     
   }
   ngOnInit() {
@@ -86,24 +75,7 @@ export class NewObsPage implements OnInit {
     
     //this.loading.dismiss();
   }
-  async createMap() {
-    if (this.newMap == null) {
-      this.newMap = await GoogleMap.create({
-        id: 'my-cool-map',
-        element: this.mapRef.nativeElement,
-        apiKey: environment.gmapApiKey,
-        config: {
-          center: {
-            lat: 33.6,
-            lng: -117.9,
-          },
-          zoom: 8,
-        },
-      });
-      this.getGeoloc();
-    }
-    
-  }
+  
   //AJOUT D'UNE IMAGE/PHOTO
   takePict()  { 
 
@@ -140,39 +112,6 @@ export class NewObsPage implements OnInit {
       this.obs.lat = coordinates.coords.latitude;
       this.obs.long = coordinates.coords.longitude;
       
-      if (this.marker === null) {
-        this.marker = {
-          coordinate: {
-            lat: this.obs.lat,
-            lng: this.obs.long
-          },
-          draggable:true,
-          title:"Ma position"
-        }
-        this.newMap.setOnMarkerDragListener(async (event) => {
-          this.obs.lat = event.latitude;
-          this.obs.long = event.longitude;
-        });
-        this.markersIds.push("marker");
-        this.newMap.addMarker(this.marker);
-      }
-      else {
-        
-        //console.log(this.markerId);
-        
-        this.newMap.removeMarker(String(this.markersIds.length-1));
-        this.marker = null;
-        this.getGeoloc();
-      }
-      //marker.setDragable();
-      this.newMap.setCamera({
-        coordinate: {
-          lat: Number(this.obs.lat),
-          lng: Number(this.obs.long),
-        },
-        zoom: 12,
-        bearing: 0
-      });
       this.closeLoading();
     };
 
@@ -234,17 +173,59 @@ export class NewObsPage implements OnInit {
     
   }
 
+
+  //MODAL IMAGE EDITION
   cancel() {
     this.modal.dismiss(null, 'cancel');
   }
 
   confirm() {
+    if (this.obs.images && (this.obs.images.length > 0)) {
+        for (let reliFiles = 0;reliFiles < this.obs.images.length;reliFiles++) 
+      {
+        if (this.obs.images[reliFiles].filename == this.imageEdit.filename)
+        {
+          this.obs.images[reliFiles].titre = this.imageEdit.titre;
+          this.obs.images[reliFiles].desc = this.imageEdit.desc;
+        }
+      }
+    }
     this.modal.dismiss(this.name, 'confirm');
   }
 
-showModal() {
-  this.modal.present();
-}
+  showModalImgEdit(img) {
+    this.imageEdit = {
+      filename:img.filename,
+      titre:img.titre,
+      desc:img.desc,
+    };
+    this.modal.present();
+  }
+
+  async showModalGmap() {
+    const modal = await this.modalCtrl.create({
+      component: ModalGmapComponent,
+    });
+    modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+
+    if (role === 'confirm') {
+      //this.message = `Hello, ${data}!`;
+    }
+  }
+
+  removeImg(img) {
+    if (this.obs.images && (this.obs.images.length > 0)) {
+      for (let reliFiles = 0;reliFiles < this.obs.images.length;reliFiles++) 
+    {
+      if (this.obs.images[reliFiles].filename == img.filename)
+      {
+        this.obs.images.splice(reliFiles,1);
+      }
+    }
+  }
+  }
 
   onWillDismiss(event: Event) {
     const ev = event as CustomEvent<OverlayEventDetail<string>>;
