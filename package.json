@@ -29,6 +29,7 @@
     "@capacitor/core": "4.1.0",
     "@capacitor/device": "^4.0.1",
     "@capacitor/geolocation": "^4.0.1",
+    "@capacitor/google-maps": "^4.5.1",
     "@capacitor/haptics": "4.0.1",
     "@capacitor/ios": "4.1.0",
     "@capacitor/keyboard": "4.0.1",

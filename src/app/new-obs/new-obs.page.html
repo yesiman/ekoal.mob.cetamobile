@@ -10,7 +10,7 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  <ion-segment [(ngModel)]="selectedPage">
+  <ion-segment  (ionChange)="segmentChanged($event)" [(ngModel)]="selectedPage">
     <ion-segment-button value="don">
       <ion-icon name="folder-open-outline"></ion-icon>
       <ion-label>Données</ion-label>
@@ -91,7 +91,7 @@
         </ion-modal>
       </ion-item>
       <ion-item *ngIf="obs.animalMort == 2">
-        <ion-label>Date de remflouage</ion-label>
+        <ion-label>Date de renflouage</ion-label>
         <ion-datetime-button  datetime="dateRemf"></ion-datetime-button>
         <ion-modal [keepContentsMounted]="true">
           <ng-template>
@@ -212,7 +212,8 @@
         <ion-label>Longitude</ion-label>
         <ion-input [(ngModel)]="obs.long"></ion-input>
       </ion-item>
-  </ion-list>
+    </ion-list>
+    <capacitor-google-map #map></capacitor-google-map>
   </div>
   <div style="height:100%;"  *ngIf="selectedPage === 'notes'">
     
@@ -238,11 +239,66 @@
     </ion-fab>
 
     <ion-list id="#images">
-      <ion-item  *ngFor="let i of obs.images">
+      <ion-item (click)="showModal()" *ngFor="let i of obs.images">
         <ion-thumbnail slot="start">
           <ion-img [src]="i.webPath" ></ion-img>
         </ion-thumbnail>
       </ion-item> 
     </ion-list>
   </div>
+
+  <ion-modal trigger="open-modal" (willDismiss)="onWillDismiss($event)">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="cancel()">Annuler</ion-button>
+          </ion-buttons>
+          <ion-title>Mise a jour image</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="confirm()" [strong]="true">Valider</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-list>
+          <ion-item>
+            <ion-label>Titre</ion-label>
+            <ion-input ></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label>Description</ion-label>
+            <ion-textarea rows="10" placeholder="Saisissez votre description ici..."></ion-textarea>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+  <ion-modal trigger="open-modal" (willDismiss)="onWillDismiss($event)">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="cancel()">Annuler</ion-button>
+          </ion-buttons>
+          <ion-title>Mise a jour image</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="confirm()" [strong]="true">Valider</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-list>
+          <ion-item>
+            <ion-label>Titre</ion-label>
+            <ion-input ></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label>Description</ion-label>
+            <ion-textarea rows="10" placeholder="Saisissez votre description ici..."></ion-textarea>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>

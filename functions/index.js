@@ -11,14 +11,17 @@ exports.replicateForFo = functions.firestore
   .document("devices/{deviceUid}/observations/{documentId}")
   .onWrite((change, context) => {
     let doc = change.after.data();
-    functions.logger.log("doc", doc);
+    //functions.logger.log("doc", doc);
     //CHECK SI TOUTES IMAGES SONT PRESENTES/UPLOADEES:AVEC URL
-    for (let reliFiles = 0;reliFiles <= doc.images.length;reliFiles++) 
-    {
-      if (!doc.images[reliFiles].url) {
-        return new Promise((resolve, reject) => {
-          resolve("Not all urls presence");
-        });
+    if (doc.images && (doc.images.length > 0)) {
+      for (let reliFiles = 0;reliFiles < doc.images.length;reliFiles++) 
+      {
+        //functions.logger.log("doc.images[reliFiles]", doc.images[reliFiles]);
+        if (!doc.images[reliFiles].url) {
+          return new Promise((resolve, reject) => {
+            resolve("Not all urls presence");
+          });
+        }
       }
     }
     //SI URLs ON ENVOIE SUR SERVEUR BO

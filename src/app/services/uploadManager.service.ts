@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { CollectionReference, Firestore, collection, collectionData, deleteDoc,doc, getDoc, updateDoc } from '@angular/fire/firestore';
+import { CollectionReference, Firestore, collection, collectionData, deleteDoc,doc, getDoc, getDocs, query, queryEqual, updateDoc, where } from '@angular/fire/firestore';
 import { FirebaseStorage, getDownloadURL, getStorage, ref, uploadBytesResumable } from '@angular/fire/storage';
-import { Device } from '@capacitor/device';
 import { Observable } from 'rxjs';
+import { datasManager } from './datas.service';
+
 
 @Injectable({
   providedIn: 'root',
@@ -12,21 +13,18 @@ export class uploadManager {
     private storage:FirebaseStorage;
     private cacheRef:CollectionReference;
 
-    constructor(private firestore: Firestore) {
+    constructor(private firestore: Firestore, private datasmanager:datasManager) {
         this.storage = getStorage();
         this.loadDeviceInfo();
-        
-        
     }
     
     loadDeviceInfo = async () => {
-        const uid = await Device.getId();
-        this.uuid = uid.uuid;
+        this.uuid = this.datasmanager.getDeviceUid();
         this.cacheRef = collection(this.firestore, "devices/"+this.uuid+"/cache/");
         this.resumeUploads();
     }
 
-    upload(data) {
+    async upload(data) {
         console.log("data is",data);
         //SI UPLOAD OK VIDAGE CACHE
         const storageRef = ref(this.storage, 'observations/'+data.filename+"."+data.ext)
@@ -74,12 +72,12 @@ export class uploadManager {
                     //ON MET A JOUR LA PROP URL DE L'IMAGE
                     for (var reliFiles = 0;reliFiles < obs.images.length;reliFiles++) 
                     {
-                        if (obs.images[reliFiles].webPath == data.wPath) {
+                        if (obs.images[reliFiles].filename == data.filename) {
                             obs.images[reliFiles].url = downloadURL;
                         }
                     }
                     updateDoc(docRef, obs).then(() => {
-                        //on vide le cache de l'image
+                        this.removeCache(data.filename);
                     });
                 }).catch((error) => {
                     console.log("Error getting document:", error);
@@ -87,6 +85,13 @@ export class uploadManager {
             });
           });
       });
+    }
+    async removeCache(filename) {
+        const q = query(this.cacheRef, where("filename", "==", filename));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach(element => {
+            deleteDoc(element.ref);
+        }); 
     }
     resumeUploads() {
         this.getCache().subscribe(res => {
@@ -100,10 +105,3 @@ export class uploadManager {
         return collectionData(cacheRef, { idField: 'id'}) as Observable<Object[]>;
       }
 }
-
-
-/*
-
-
-
-*/

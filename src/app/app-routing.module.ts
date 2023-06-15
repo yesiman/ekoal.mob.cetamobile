@@ -22,6 +22,10 @@ const routes: Routes = [
   {
     path: 'menu',
     loadChildren: () => import('./menu/menu.module').then( m => m.MenuPageModule)
+  },
+  {
+    path: 'mod-image',
+    loadChildren: () => import('./mod-image/mod-image.module').then( m => m.ModImagePageModule)
   }
 ];
 
