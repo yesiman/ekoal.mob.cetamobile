@@ -1,0 +1,16 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Géolocalisation des observations</ion-title>
+  </ion-toolbar>
+  
+</ion-header>
+
+<ion-content [style.opacity]="0" >
+    <div style="width:100%;height:100%" class="ion-padding">
+      <capacitor-google-map #map style="display: inline-block;width: 100%;height: 100%;"></capacitor-google-map>
+    </div>
+    
+</ion-content>

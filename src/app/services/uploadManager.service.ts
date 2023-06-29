@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CollectionReference, Firestore, collection, collectionData, deleteDoc,doc, getDoc, getDocs, query, queryEqual, updateDoc, where } from '@angular/fire/firestore';
+import { CollectionReference, Firestore, arrayRemove, arrayUnion, collection, collectionData, deleteDoc,doc, getDoc, getDocs, query, queryEqual, updateDoc, where } from '@angular/fire/firestore';
 import { FirebaseStorage, getDownloadURL, getStorage, ref, uploadBytesResumable } from '@angular/fire/storage';
 import { Observable } from 'rxjs';
 import { datasManager } from './datas.service';
@@ -70,15 +70,21 @@ export class uploadManager {
                 const docSnap = getDoc(docRef).then((doc) => {
                     let obs = doc.data();
                     //ON MET A JOUR LA PROP URL DE L'IMAGE
-                    for (var reliFiles = 0;reliFiles < obs.images.length;reliFiles++) 
+                    for (let reliFiles = 0;reliFiles < obs.images.length;reliFiles++) 
                     {
                         if (obs.images[reliFiles].filename == data.filename) {
-                            obs.images[reliFiles].url = downloadURL;
+                            let img = obs.images[reliFiles];
+                            img.url = downloadURL;
+                            updateDoc(docRef, { images:arrayUnion(img) }).then(() => {
+                              delete img.url;
+                              updateDoc(docRef, { images:arrayRemove(img) }).then(() => {
+                                this.removeCache(data.filename);
+                            });
+                          });
+                            
                         }
                     }
-                    updateDoc(docRef, obs).then(() => {
-                        this.removeCache(data.filename);
-                    });
+                    
                 }).catch((error) => {
                     console.log("Error getting document:", error);
                 })

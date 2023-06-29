@@ -26,6 +26,10 @@ const routes: Routes = [
   {
     path: 'mod-image',
     loadChildren: () => import('./mod-image/mod-image.module').then( m => m.ModImagePageModule)
+  },
+  {
+    path: 'map',
+    loadChildren: () => import('./map/map.module').then( m => m.MapPageModule)
   }
 ];
 

@@ -18,9 +18,10 @@ import { uploadManager } from './services/uploadManager.service';
 import { datasManager } from './services/datas.service';
 import { ModalGmapComponent } from './new-obs/modal-gmap/modal-gmap.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { MapopComponent } from './map/mapop/mapop.component';
 @NgModule({
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  declarations: [AppComponent, ModalGmapComponent],
+  declarations: [AppComponent, ModalGmapComponent, MapopComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore()),

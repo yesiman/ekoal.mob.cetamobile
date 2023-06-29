@@ -13,24 +13,34 @@
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item button detail="true" *ngFor="let obs of observations" (click)="showObs(obs.id)">
-      <ion-thumbnail  *ngIf="obs.images.length>0" slot="start">
-        <ion-img  [src]="obs.images[0].webPath"></ion-img>
-      </ion-thumbnail>
-      <ion-label>
-        <h3>{{ obs.dateObs }}</h3>
-        <p *ngIf="obs.observ">{{ obs.observ }}</p>
-        <p *ngIf="obs.comments">{{ obs.comments }}</p>
-      </ion-label>
-      
-    </ion-item>
-    <!--<ion-item (click)="showObs(p.dateObs)" *ngFor="let p of obsArray;">
-      <ion-thumbnail slot="start">
-        <img [src]="getSanitizeUrl(p.imgSrc)" />
-      </ion-thumbnail>  
-      <ion-label><h2>{{ p.espece }}</h2><h3>{{ p.dateObs }}</h3><p>{{ p.observationdetails }}</p></ion-label>
-    </ion-item> -->
-  </ion-list>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title></ion-card-title>
+      <ion-card-subtitle><p>Liste de vos observations de la plus récente à la plus ancienne</p></ion-card-subtitle>
+    </ion-card-header>
+  </ion-card>
+      <ion-list>
+        <ion-item button detail="true" *ngFor="let obs of observations" (click)="showObs(obs.id)">
+          <ion-thumbnail  *ngIf="obs.images.length>0" slot="start">
+            <ion-img  [src]="obs.images[0].webPath"></ion-img>
+          </ion-thumbnail>
+          <ion-label>
+            <h3>{{ obs.dateObs  | date : "dd/MM/yyyy hh:mm" }}</h3>
+            <p *ngIf="obs.observ">{{ obs.observ }}</p>
+            <p *ngIf="obs.comments">{{ obs.comments }}</p>
+          </ion-label>
+          
+        </ion-item>
+        <!--<ion-item (click)="showObs(p.dateObs)" *ngFor="let p of obsArray;">
+          <ion-thumbnail slot="start">
+            <img [src]="getSanitizeUrl(p.imgSrc)" />
+          </ion-thumbnail>  
+          <ion-label><h2>{{ p.espece }}</h2><h3>{{ p.dateObs }}</h3><p>{{ p.observationdetails }}</p></ion-label>
+        </ion-item> -->
+      </ion-list>
+
+
+
+  
   
 </ion-content>

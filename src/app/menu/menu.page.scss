@@ -1,0 +1,21 @@
+ion-header {
+    ion-toolbar {
+        background-color: #60d0fe;
+
+        ion-img.head-logo {
+            height: 30px;
+        }
+    }
+    
+}
+
+ion-content {
+    background-image: url('../../assets/img/logo.png');
+    background-position: bottom;
+    background-size: 300px auto;
+    background-repeat: no-repeat;    
+    --background: unset;
+    h4 {
+        color: #333;    
+    }
+}

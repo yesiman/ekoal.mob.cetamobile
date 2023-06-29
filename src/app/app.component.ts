@@ -8,10 +8,10 @@ import { datasManager } from './services/datas.service';
 export class AppComponent {
   public appPages = [
     
-    { title: 'Nouvelle observation', url: '/newobs', icon: 'paper-plane' },
-    { title: 'Mes observations', url: '/folder/Send', icon: 'paper-plane' },
-    //{ title: 'Supprimer mes observations', url: '/folder/Delete', icon: 'trash' },
-    { title: 'Déconnexion', url: '/login', icon: 'paper-plane' },
+    { title: 'Nouvelle observation', url: '/newobs', icon: 'add-circle' },
+    { title: 'Mes observations', url: '/folder/Send', icon: 'list-circle' },
+    { title: 'Carte', url: '/map', icon: 'map' },
+    //{ title: 'Déconnexion', url: '/login', icon: 'log-out' },
     //{ title: 'Inbox', url: '/folder/Inbox', icon: 'mail' },
     //{ title: 'Outbox', url: '/folder/Outbox', icon: 'paper-plane' },
     //{ title: 'Favorites', url: '/folder/Favorites', icon: 'heart' },
@@ -21,6 +21,7 @@ export class AppComponent {
   ];
   //public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
   constructor(private datasmanager:datasManager) {
+    console.log("??");
     this.datasmanager.init();
   }
   

@@ -1,4 +1,5 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, ParamMap, Route } from '@angular/router';
 import { GoogleMap, Marker } from '@capacitor/google-maps';
 
 import { ModalController } from '@ionic/angular';
@@ -14,12 +15,18 @@ export class ModalGmapComponent implements OnInit {
   newMap: GoogleMap = null;
   marker:Marker = null;
   markersIds = [];
-
-  constructor(private modalCtrl: ModalController) {}
+  @Input() lat: string;
+  @Input() long: string;
+  //var lat;
+  //var lng;
+  constructor(private modalCtrl: ModalController,private activatedRoute: ActivatedRoute) {}
 
   ngOnInit() { 
+    
+    
     setTimeout(() => {
       this.createMap();
+
     }, 250);
   }
   
@@ -35,18 +42,57 @@ export class ModalGmapComponent implements OnInit {
             lng: -117.9,
           },
           zoom: 8,
+          zoomControl:true,
+          scrollwheel: false,
+          disableDoubleClickZoom: true,
+          mapTypeId: 'hybrid',
+          fullscreenControl:false
         },
+      });
+      this.marker = {
+        
+        coordinate: {
+          lat: Number(this.lat),
+          lng: Number(this.long)
+        },
+        draggable:true,
+        title:"Ma position"
+      }
+      this.newMap.setOnMarkerDragListener(async (event) => {
+        this.lat = event.latitude.toString();
+        this.long = event.longitude.toString();
+      });
+      this.markersIds.push("marker");
+      this.newMap.addMarker(this.marker);
+      this.newMap.setCamera({
+        coordinate: {
+          lat: Number(this.lat),
+          lng: Number(this.long),
+        },
+        zoom: 12,
+        bearing: 0
       });
     }
     
   }
 
   cancel() {
+    this.newMap.destroy();
+    this.newMap = null;
     return this.modalCtrl.dismiss(null, 'cancel');
   }
 
   confirm() {
-    return this.modalCtrl.dismiss({}, 'confirm');
+    this.newMap.destroy();
+    this.newMap = null;
+    return this.modalCtrl.dismiss({
+      lat:this.lat,
+      long:this.long
+    }, 'confirm');
+  }
+
+  onWillDismiss(event: Event) {
+    alert("eee");
   }
 
 /*
@@ -75,14 +121,7 @@ if (this.marker === null) {
         this.getGeoloc();
       }
       //marker.setDragable();
-      this.newMap.setCamera({
-        coordinate: {
-          lat: Number(this.obs.lat),
-          lng: Number(this.obs.long),
-        },
-        zoom: 12,
-        bearing: 0
-      });
+      
 */ 
 
 

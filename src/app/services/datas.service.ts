@@ -15,18 +15,10 @@ export class datasManager {
       
     }
     init() {
-      this.loadDeviceInfos();
+      
       enableIndexedDbPersistence(this.firestore)
         .then(() => { 
-          console.log("Offline persistence enabled");
-          this.getEnumsRef().subscribe(res => {
-            this.enums = res;
-            //this.cd.detectChanges();
-          }); 
-          this.getObservationsRef().subscribe(res => {
-            this.observations = res;
-            //this.cd.detectChanges();
-          }); 
+          this.loadDeviceInfos();
         })
         .catch(error => {
             switch (error.code) {
@@ -42,14 +34,22 @@ export class datasManager {
     })
     }
     loadDeviceInfos = async () => {
-      const uid = await Device.getId();
-      this.deviceUid = uid.uuid;
+       Device.getId().then((val) => {
+        this.deviceUid = val.uuid;
+        this.getEnumsRef().subscribe(res => {
+          this.enums = res;
+        });         
+        this.getObservationsRef().subscribe(res => {
+          this.observations = res;
+        }); 
+       })
     }
     getEnumsRef(): Observable<Object[]> {
       const enumsRef = collection(this.firestore, 'enums');
       return collectionData(enumsRef, { idField: '_id'}) as Observable<Object[]>;
     }
     getObservationsRef(): Observable<Object[]> {
+      console.log("this.deviceUid",this.deviceUid);
       const observationsRef = collection(this.firestore, 'devices',this.deviceUid,'observations');
       return collectionData(observationsRef, { idField: 'id'}) as Observable<Object[]>;
     }
@@ -58,6 +58,16 @@ export class datasManager {
     }
     getEnums() {      
       return this.enums;
+    }
+    getEnumLib(type,uid) {     
+      console.log(type,uid); 
+      for (let reli = 0;reli < this.enums.length;reli++) 
+      {
+        if ((this.enums[reli].listId == type) && (this.enums[reli].id == uid))
+        {
+          return this.enums[reli].value;
+        }
+      }
     }
     getObservations() {      
       return this.observations;

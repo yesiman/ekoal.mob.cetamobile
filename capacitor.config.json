@@ -1,6 +1,6 @@
 {
-	"appId": "io.ionic.starter",
-	"appName": "cetobs",
+	"appId": "ekoal.mamm",
+	"appName": "mamm",
 	"webDir": "www",
 	"bundledWebRuntime": false,
 	"plugins": {

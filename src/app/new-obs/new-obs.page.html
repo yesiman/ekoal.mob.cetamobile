@@ -1,37 +1,42 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-menu-button ></ion-menu-button>
     </ion-buttons>
-    <ion-title>Nouvelle observation</ion-title>
+    <ion-title>Observation</ion-title>
     <ion-buttons slot="end" >
       <ion-button (click)="valid()">
-        <ion-icon name="checkmark-outline" color="success"></ion-icon>
+        <ion-icon name="checkmark-outline" style="color:#196808;font-weight: bolder;"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  <ion-segment  (ionChange)="segmentChanged($event)" [(ngModel)]="selectedPage">
-    <ion-segment-button value="don">
-      <ion-icon name="folder-open-outline"></ion-icon>
-      <ion-label>Données</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="notes">
-      <ion-icon name="reader-outline"></ion-icon>
-      <ion-label>Notes</ion-label>
-    </ion-segment-button>
-    
-    <ion-segment-button value="loc">
-      <ion-icon name="locate-outline"></ion-icon>
-      <ion-label>Localisation</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="imgs">
-      <ion-icon name="camera-outline"></ion-icon>
-      <ion-label>Photos</ion-label>
-    </ion-segment-button>
-  </ion-segment>
+  
 </ion-header>
 
-<ion-content class="padding" color="light">
+<ion-content  [style.opacity]="isModal ? 0 : 1">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle><p>Merci de détailler au maximum et de compléter tous les champs</p></ion-card-subtitle>
+    </ion-card-header>
+  </ion-card>
+      <ion-segment mode="md" (ionChange)="segmentChanged($event)" mode="ios" [(ngModel)]="selectedPage">
+        <ion-segment-button mode="md" value="don">
+          <ion-icon name="folder-open-outline"></ion-icon>
+          <ion-label>Saisie</ion-label>
+        </ion-segment-button>
+        <ion-segment-button mode="md" value="notes">
+          <ion-icon name="reader-outline"></ion-icon>
+          <ion-label>Notes</ion-label>
+        </ion-segment-button>
+        <ion-segment-button mode="md" value="loc">
+          <ion-icon name="locate-outline"></ion-icon>
+          <ion-label>GPS</ion-label>
+        </ion-segment-button>
+        <ion-segment-button mode="md" value="imgs">
+          <ion-icon name="camera-outline"></ion-icon>
+          <ion-label>Photos</ion-label>
+        </ion-segment-button>
+      </ion-segment>
   <!--DONNEES PRINCIPALES-->
   <div style="height:100%;"  *ngIf="selectedPage === 'don'">
     <ion-list>
@@ -48,7 +53,6 @@
       <ion-item>
         <ion-label>Espèce</ion-label>
         <ion-select placeholder="Selection" [(ngModel)]="obs.espece">
-          <ion-select-option value="" selected="selected"> </ion-select-option>
           <ion-item *ngFor="let enum of enums">
             <ion-select-option  *ngIf="enum.listId=='espece'" value={{enum.id}}>{{enum.value}}</ion-select-option>
           </ion-item>
@@ -57,7 +61,6 @@
       <ion-item>
         <ion-label>Détermination</ion-label>
         <ion-select placeholder="Selection" [(ngModel)]="obs.determination">
-          <ion-select-option value="" selected="selected"> </ion-select-option>
           <ion-item *ngFor="let enum of enums">
             <ion-select-option  *ngIf="enum.listId=='determination'" value={{enum.id}}>{{enum.value}}</ion-select-option>
           </ion-item>
@@ -66,7 +69,6 @@
       <ion-item>
         <ion-label>Sexe</ion-label>
         <ion-select placeholder="Selection" [(ngModel)]="obs.sexe">
-          <ion-select-option value="" selected="selected"> </ion-select-option>
           <ion-item *ngFor="let enum of enums">
             <ion-select-option  *ngIf="enum.listId=='sexe'" value={{enum.id}}>{{enum.value}}</ion-select-option>
           </ion-item>
@@ -141,7 +143,6 @@
       <ion-item>
         <ion-label>Circonstance</ion-label>
         <ion-select placeholder="Selection" [(ngModel)]="obs.circonst">
-          <ion-select-option value="" selected="selected"> </ion-select-option>
           <ion-item *ngFor="let enum of enums">
             <ion-select-option  *ngIf="enum.listId=='circonstances'" value={{enum.id}}>{{enum.value}}</ion-select-option>
           </ion-item>
@@ -157,7 +158,6 @@
       <ion-item>
         <ion-label>Région</ion-label>
         <ion-select placeholder="Selection" [(ngModel)]="obs.region">
-            <ion-select-option value="" selected="selected"> </ion-select-option>
             <ion-item *ngFor="let enum of enums">
               <ion-select-option  *ngIf="enum.listId=='regions'" value={{enum.id}}>{{enum.value}}</ion-select-option>
             </ion-item>    
@@ -197,14 +197,6 @@
   </div>
 
   <div style="height:100%;"  *ngIf="selectedPage === 'loc'">
-    <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-      <ion-fab-button>
-        <ion-icon name="locate-outline" (click)="getGeoloc()"></ion-icon>
-      </ion-fab-button>
-      <ion-fab-button>
-        <ion-icon name="map" (click)="showModalGmap()"></ion-icon>
-      </ion-fab-button>
-    </ion-fab>
     <ion-list>
       
       <ion-item>
@@ -235,11 +227,7 @@
 
 
   <div style="height:100%;" *ngIf="selectedPage === 'imgs'">
-    <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-      <ion-fab-button>
-        <ion-icon name="add" (click)="takePict()"></ion-icon>
-      </ion-fab-button>
-    </ion-fab>
+    
 
     <ion-list id="#images">
       <ion-item-sliding *ngFor="let i of obs.images">
@@ -258,6 +246,22 @@
       </ion-item-sliding>
     </ion-list>
   </div>
+  
+
+  <ion-fab  *ngIf="selectedPage === 'loc'" slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button>
+      <ion-icon name="locate-outline" (click)="getGeoloc()"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-button>
+      <ion-icon name="map" (click)="showModalGmap()"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end"  *ngIf="selectedPage === 'imgs'">
+    <ion-fab-button>
+      <ion-icon name="add" (click)="takePict()"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 
   <ion-modal trigger="open-modal" (willDismiss)="onWillDismiss($event)">
     <ng-template>
@@ -273,16 +277,22 @@
         </ion-toolbar>
       </ion-header>
       <ion-content class="ion-padding">
-        <ion-list>
-          <ion-item>
-            <ion-label>Titre</ion-label>
-            <ion-input  [(ngModel)]="imageEdit.titre"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label>Description</ion-label>
-            <ion-textarea rows="10" [(ngModel)]="imageEdit.desc" placeholder="Saisissez votre description ici..."></ion-textarea>
-          </ion-item>
-        </ion-list>
+        <ion-card>
+          <ion-img  *ngIf="obs.images.length>0" [src]="obs.images[0].webPath" ></ion-img>
+          <ion-card-content>
+            <ion-list>
+              <ion-item>
+                <ion-label>Titre</ion-label>
+                <ion-input  [(ngModel)]="imageEdit.titre"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label>Description</ion-label>
+                <ion-textarea rows="10" [(ngModel)]="imageEdit.desc" placeholder="Saisissez votre description ici..."></ion-textarea>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+
       </ion-content>
     </ng-template>
   </ion-modal>

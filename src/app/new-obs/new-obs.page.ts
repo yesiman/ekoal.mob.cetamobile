@@ -25,6 +25,7 @@ export class NewObsPage implements OnInit {
   private imageEdit:any = {};
   private id:number;
   public enums;
+  isModal = false;
   constructor(private router: Router,private firestore: Firestore,private activatedRoute: ActivatedRoute, 
     private uploadmanager:uploadManager, private datasmanager:datasManager,private loadingCtrl: LoadingController,private modalCtrl: ModalController) {
     
@@ -47,10 +48,12 @@ export class NewObsPage implements OnInit {
             }
             this.id = params.uid;
             this.updateMode = true;
-            
         }).catch((error) => {
             console.log("Error getting document:", error);
         })
+      }
+        else {
+          this.getGeoloc();
         } // { category: "fiction" }
         
       }
@@ -58,7 +61,6 @@ export class NewObsPage implements OnInit {
 
   }
   segmentChanged(e) {
-    console.log(e);
     /*if (e.detail.value == "loc") {
       setTimeout(() => {
         this.createMap();  
@@ -114,17 +116,11 @@ export class NewObsPage implements OnInit {
       
       this.closeLoading();
     };
-
-
-    
-    
-
     printCurrentPosition();
   }
   //VALIDATION SAISIE
   valid() { 
-    this.obs.uid = uuidv4();
-    console.log("this.obs",this.obs);
+    
 
     if (this.obs.comments) { this.obs.comments = this.obs.comments.replace(/(["])/g,'&quot;') }
     if (this.obs.observ) { this.obs.observ = this.obs.observ.replace(/(["])/g,'&quot;') }
@@ -138,6 +134,7 @@ export class NewObsPage implements OnInit {
       });
     }else {
       //ADD RECORD
+      this.obs.uid = uuidv4();
       const notesRef = collection(this.firestore, "devices/"+this.uuid+"/observations/");
       addDoc(notesRef, this.obs).then((documentReference: DocumentReference) => {
         this.managePicts(documentReference.id);
@@ -152,17 +149,18 @@ export class NewObsPage implements OnInit {
       for (let reliFiles = 0;reliFiles < this.obs.images.length;reliFiles++) 
       {
         let curFile = this.obs.images[reliFiles];
-        console.log("curFile is",curFile);
-        let cacheDatas = {
-          wPath:curFile.webPath,
-          parentUid:parentUid,
-          filename:curFile.filename,
-          ext:curFile.ext,
-        };
-        //ajout dans le cache
-        addDoc(cacheRef, cacheDatas).then((documentReference: DocumentReference) => {
-          this.uploadmanager.upload(cacheDatas);
-        });
+        if (!curFile.url) {
+          let cacheDatas = {
+            wPath:curFile.webPath,
+            parentUid:parentUid,
+            filename:curFile.filename,
+            ext:curFile.ext,
+          };
+          //ajout dans le cache
+          addDoc(cacheRef, cacheDatas).then((documentReference: DocumentReference) => {
+            this.uploadmanager.upload(cacheDatas);
+          });
+        } 
       }
       this.router.navigate(['/folder/Inbox'],{replaceUrl: true})
     }else {
@@ -181,7 +179,7 @@ export class NewObsPage implements OnInit {
 
   confirm() {
     if (this.obs.images && (this.obs.images.length > 0)) {
-        for (let reliFiles = 0;reliFiles < this.obs.images.length;reliFiles++) 
+      for (let reliFiles = 0;reliFiles < this.obs.images.length;reliFiles++) 
       {
         if (this.obs.images[reliFiles].filename == this.imageEdit.filename)
         {
@@ -203,9 +201,31 @@ export class NewObsPage implements OnInit {
   }
 
   async showModalGmap() {
+
+    this.isModal = true;
+
     const modal = await this.modalCtrl.create({
       component: ModalGmapComponent,
+      cssClass:"gmapCss",
+      componentProps: {
+        lat:this.obs.lat,
+        long:this.obs.long
+      },
+      backdropDismiss:false
     });
+
+    modal.onDidDismiss().then((modelData) => {
+      if (modelData !== null) {
+        if (modelData.data != null)
+        {
+          this.obs.lat = modelData.data.lat;
+          this.obs.long = modelData.data.long;
+        }
+        
+      }
+      this.isModal = false;
+    });
+
     modal.present();
 
     const { data, role } = await modal.onWillDismiss();
@@ -226,6 +246,8 @@ export class NewObsPage implements OnInit {
     }
   }
   }
+
+  
 
   onWillDismiss(event: Event) {
     const ev = event as CustomEvent<OverlayEventDetail<string>>;

@@ -1,0 +1,13 @@
+<ion-content class="ion-padding">
+  <ion-item>
+    <ion-thumbnail  *ngIf="obs.images.length>0" slot="start">
+      <ion-img  [src]="obs.images[0].webPath"></ion-img>
+    </ion-thumbnail>
+    <ion-label>
+      <h3>{{ obs.dateObs }}</h3>
+      <p *ngIf="obs.observ">{{ obs.observ }}</p>
+      <p *ngIf="obs.comments">{{ obs.comments }}</p>
+    </ion-label>
+    
+  </ion-item>
+</ion-content>
