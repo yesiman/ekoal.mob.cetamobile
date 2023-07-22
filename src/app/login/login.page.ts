@@ -11,6 +11,7 @@ export class LoginPage implements OnInit {
     login:"",
     pass:""
   } 
+  invalidLogin = false;
   constructor(private router:Router) { }
 
   ngOnInit() {
@@ -20,6 +21,10 @@ export class LoginPage implements OnInit {
     if ((this.auth.login == "admin") && (this.auth.pass=="ceta23"))
     {
       this.router.navigateByUrl('/menu');
+      this.invalidLogin = false;
+    }
+    else {
+      this.invalidLogin = true;
     }
   }
 

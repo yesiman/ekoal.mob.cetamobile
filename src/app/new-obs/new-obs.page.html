@@ -45,7 +45,7 @@
         <ion-datetime-button  datetime="dateObs"></ion-datetime-button>
         <ion-modal [keepContentsMounted]="true">
           <ng-template>
-            <ion-datetime  [(ngModel)]="obs.dateObs" id="dateObs"></ion-datetime>
+            <ion-datetime [showDefaultButtons]="true" doneText="Ok" cancelText="Annuler" [(ngModel)]="obs.dateObs" id="dateObs"></ion-datetime>
           </ng-template>
         </ion-modal>
       </ion-item>
@@ -53,32 +53,32 @@
       <ion-item>
         <ion-label>Espèce</ion-label>
         <ion-select placeholder="Selection" [(ngModel)]="obs.espece">
-          <ion-item *ngFor="let enum of enums">
-            <ion-select-option  *ngIf="enum.listId=='espece'" value={{enum.id}}>{{enum.value}}</ion-select-option>
+          <ion-item *ngFor="let enum of datasmanager.getEspeces()">
+            <ion-select-option   value={{enum.id}}>{{enum.value}}</ion-select-option>
           </ion-item>
         </ion-select>
       </ion-item>
       <ion-item>
         <ion-label>Détermination</ion-label>
         <ion-select placeholder="Selection" [(ngModel)]="obs.determination">
-          <ion-item *ngFor="let enum of enums">
-            <ion-select-option  *ngIf="enum.listId=='determination'" value={{enum.id}}>{{enum.value}}</ion-select-option>
+          <ion-item *ngFor="let enum of datasmanager.getDetermination()">
+            <ion-select-option   value={{enum.id}}>{{enum.value}}</ion-select-option>
           </ion-item>
         </ion-select>
       </ion-item>
       <ion-item>
         <ion-label>Sexe</ion-label>
         <ion-select placeholder="Selection" [(ngModel)]="obs.sexe">
-          <ion-item *ngFor="let enum of enums">
-            <ion-select-option  *ngIf="enum.listId=='sexe'" value={{enum.id}}>{{enum.value}}</ion-select-option>
+          <ion-item *ngFor="let enum of datasmanager.getSexe()">
+            <ion-select-option   value={{enum.id}}>{{enum.value}}</ion-select-option>
           </ion-item>
         </ion-select>
       </ion-item>
       <ion-item>
         <ion-label>Animal mort</ion-label>
         <ion-select placeholder="Selection" [(ngModel)]="obs.animalMort">
-          <ion-item *ngFor="let enum of enums">
-            <ion-select-option  *ngIf="enum.listId=='ouinon'" value={{enum.id}}>{{enum.value}}</ion-select-option>
+          <ion-item *ngFor="let enum of datasmanager.getOuinon()">
+            <ion-select-option   value={{enum.id}}>{{enum.value}}</ion-select-option>
           </ion-item>
         </ion-select>
       </ion-item>
@@ -88,7 +88,7 @@
         <ion-datetime-button  datetime="dateEchou"></ion-datetime-button>
         <ion-modal [keepContentsMounted]="true">
           <ng-template>
-            <ion-datetime  [(ngModel)]="obs.dateEchou" id="dateEchou"></ion-datetime>
+            <ion-datetime  [showDefaultButtons]="true"  doneText="Ok" cancelText="Annuler" [(ngModel)]="obs.dateEchou" id="dateEchou"></ion-datetime>
           </ng-template>
         </ion-modal>
       </ion-item>
@@ -97,7 +97,7 @@
         <ion-datetime-button  datetime="dateRemf"></ion-datetime-button>
         <ion-modal [keepContentsMounted]="true">
           <ng-template>
-            <ion-datetime  [(ngModel)]="obs.dateRemf" id="dateRemf"></ion-datetime>
+            <ion-datetime [showDefaultButtons]="true"  doneText="Ok" cancelText="Annuler" [(ngModel)]="obs.dateRemf" id="dateRemf"></ion-datetime>
           </ng-template>
         </ion-modal>
       </ion-item>
@@ -107,7 +107,7 @@
         <ion-datetime-button  datetime="dateAnimMort"></ion-datetime-button>
         <ion-modal [keepContentsMounted]="true">
           <ng-template>
-            <ion-datetime  [(ngModel)]="obs.dateAnimMort" id="dateAnimMort"></ion-datetime>
+            <ion-datetime [showDefaultButtons]="true"  doneText="Ok" cancelText="Annuler" [(ngModel)]="obs.dateAnimMort" id="dateAnimMort"></ion-datetime>
           </ng-template>
         </ion-modal>
       </ion-item>
@@ -116,23 +116,23 @@
         <ion-datetime-button  datetime="dateDecouv"></ion-datetime-button>
         <ion-modal [keepContentsMounted]="true">
           <ng-template>
-            <ion-datetime  [(ngModel)]="obs.dateDecouv" id="dateDecouv"></ion-datetime>
+            <ion-datetime [showDefaultButtons]="true"  doneText="Ok" cancelText="Annuler" [(ngModel)]="obs.dateDecouv" id="dateDecouv"></ion-datetime>
           </ng-template>
         </ion-modal>
       </ion-item>
       <ion-item *ngIf="obs.animalMort == 1">
         <ion-label>Code de décomposition</ion-label>
         <ion-select placeholder="Selection" [(ngModel)]="obs.codeDecomp">
-          <ion-item *ngFor="let enum of enums">
-            <ion-select-option  *ngIf="enum.listId=='decomposition'" value={{enum.id}}>{{enum.value}}</ion-select-option>
+          <ion-item *ngFor="let enum of datasmanager.getDecomposition()">
+            <ion-select-option  value={{enum.id}}>{{enum.value}}</ion-select-option>
           </ion-item>
         </ion-select>
       </ion-item>
       <ion-item *ngIf="obs.animalMort == 2">
         <ion-label>Action</ion-label>
         <ion-select placeholder="Selection" [(ngModel)]="obs.action">
-          <ion-item *ngFor="let enum of enums">
-            <ion-select-option  *ngIf="enum.listId=='actions'" value={{enum.id}}>{{enum.value}}</ion-select-option>
+          <ion-item *ngFor="let enum of datasmanager.getActions()">
+            <ion-select-option   value={{enum.id}}>{{enum.value}}</ion-select-option>
           </ion-item>
         </ion-select>
       </ion-item>
@@ -143,8 +143,8 @@
       <ion-item>
         <ion-label>Circonstance</ion-label>
         <ion-select placeholder="Selection" [(ngModel)]="obs.circonst">
-          <ion-item *ngFor="let enum of enums">
-            <ion-select-option  *ngIf="enum.listId=='circonstances'" value={{enum.id}}>{{enum.value}}</ion-select-option>
+          <ion-item *ngFor="let enum of datasmanager.getCirconstances()">
+            <ion-select-option   value={{enum.id}}>{{enum.value}}</ion-select-option>
           </ion-item>
         </ion-select>
       </ion-item>
@@ -158,24 +158,24 @@
       <ion-item>
         <ion-label>Région</ion-label>
         <ion-select placeholder="Selection" [(ngModel)]="obs.region">
-            <ion-item *ngFor="let enum of enums">
-              <ion-select-option  *ngIf="enum.listId=='regions'" value={{enum.id}}>{{enum.value}}</ion-select-option>
+            <ion-item *ngFor="let enum of datasmanager.getRegions()">
+              <ion-select-option   value={{enum.id}}>{{enum.value}}</ion-select-option>
             </ion-item>    
         </ion-select>
       </ion-item>
       <ion-item *ngIf="obs.region">
         <ion-label>District</ion-label>
         <ion-select placeholder="Selection" [(ngModel)]="obs.district">
-        <ion-item *ngFor="let enum of enums">
-          <ion-select-option  *ngIf="((enum.listId == 'districts') && (enum.region.id == obs.region))" value={{enum.id}}>{{enum.value}}</ion-select-option>
+        <ion-item *ngFor="let enum of datasmanager.getDistricts()">
+          <ion-select-option  *ngIf="(enum.region.id == obs.region)" value={{enum.id}}>{{enum.value}}</ion-select-option>
         </ion-item>
         </ion-select>
       </ion-item>
       <ion-item *ngIf="obs.region">
         <ion-label>Commune</ion-label>
         <ion-select placeholder="Selection" [(ngModel)]="obs.commune">
-          <ion-item *ngFor="let enum of enums">
-            <ion-select-option  *ngIf="((enum.listId=='commmunes') && (enum.district.id == obs.district))" value={{enum.id}}>{{enum.value}}</ion-select-option>
+          <ion-item *ngFor="let enum of datasmanager.getCommmunes()">
+            <ion-select-option  *ngIf="(enum.district.id == obs.district)" value={{enum.id}}>{{enum.value}}</ion-select-option>
           </ion-item>
         </ion-select>
       </ion-item>
@@ -227,8 +227,6 @@
 
 
   <div style="height:100%;" *ngIf="selectedPage === 'imgs'">
-    
-
     <ion-list id="#images">
       <ion-item-sliding *ngFor="let i of obs.images">
         <ion-item button detail="true" (click)="showModalImgEdit(i)">
@@ -278,7 +276,7 @@
       </ion-header>
       <ion-content class="ion-padding">
         <ion-card>
-          <ion-img  *ngIf="obs.images.length>0" [src]="obs.images[0].webPath" ></ion-img>
+          <ion-img  [src]="imageEdit.webPath" ></ion-img>
           <ion-card-content>
             <ion-list>
               <ion-item>

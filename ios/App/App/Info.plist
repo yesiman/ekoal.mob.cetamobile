@@ -32,7 +32,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>La caméra va être utilisée</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>La géolocalisation va être utilisée</string>
+	<string>La géolocalisation va être utilisée pour cibler l&apos;endroit de votre découverte</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>La librairie photo va être utilisée</string>
 	<key>NSPhotoLibraryUsageDescription</key>

@@ -110,7 +110,7 @@ export class NewObsPage implements OnInit {
         this.loading = await this.loadingCtrl.create({});
       }*/
       //this.showLoading();
-      const coordinates = await Geolocation.getCurrentPosition();
+      const coordinates = await Geolocation.getCurrentPosition({enableHighAccuracy:true});
       this.obs.lat = coordinates.coords.latitude;
       this.obs.long = coordinates.coords.longitude;
       
@@ -183,8 +183,9 @@ export class NewObsPage implements OnInit {
       {
         if (this.obs.images[reliFiles].filename == this.imageEdit.filename)
         {
-          this.obs.images[reliFiles].titre = this.imageEdit.titre;
-          this.obs.images[reliFiles].desc = this.imageEdit.desc;
+          if (this.imageEdit.titre) { this.obs.images[reliFiles].titre = this.imageEdit.titre; }
+          if (this.imageEdit.desc) { this.obs.images[reliFiles].desc = this.imageEdit.desc; }
+          break;
         }
       }
     }
@@ -193,6 +194,7 @@ export class NewObsPage implements OnInit {
 
   showModalImgEdit(img) {
     this.imageEdit = {
+      webPath:img.webPath,
       filename:img.filename,
       titre:img.titre,
       desc:img.desc,

@@ -4,6 +4,8 @@ import { environment } from 'src/environments/environment';
 import { datasManager } from '../services/datas.service';
 import { PopoverController } from '@ionic/angular';
 import { MapopComponent } from './mapop/mapop.component';
+import { Platform } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-map',
@@ -17,16 +19,15 @@ export class MapPage implements OnInit {
   markers = [];  
   private uuid = "";
   public observations;
-  constructor(private datasmanager:datasManager,public popoverController: PopoverController) { }
-
-
+  public opacity;
+  constructor(private datasmanager:datasManager,public popoverController: PopoverController,public platform: Platform) { }
   loadDeviceInfo = async () => {
-    
     
   };
 
   ngOnInit() {
     setTimeout(() => {
+      this.opacity = (this.platform.is("android")?"0":"1");
       this.newMap = null;
       this.datasmanager.getObservationsRef().subscribe(res => {
         this.observations = res;

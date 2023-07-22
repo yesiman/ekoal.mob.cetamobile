@@ -27,6 +27,7 @@
           <!--type="submit" -->
           <ion-button expand="block" (click)="valid()"  >Connexion</ion-button>
           <!--<a [routerLink]="['/forgot-password']" class="small-text">Mot de passe oublié</a>-->
+          <label *ngIf="invalidLogin === true" style="color:crimson;">Identifiants invalides</label>
         </ion-col>
       </ion-row>
     </form>

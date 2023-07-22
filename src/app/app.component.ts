@@ -21,7 +21,6 @@ export class AppComponent {
   ];
   //public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
   constructor(private datasmanager:datasManager) {
-    console.log("??");
     this.datasmanager.init();
   }
   
