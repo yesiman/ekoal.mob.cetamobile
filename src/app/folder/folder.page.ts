@@ -35,7 +35,7 @@ export class FolderPage implements OnInit {
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
       header: 'Confirmation',
-      message: 'Etes vous sur de vouloirs supprimer vos observations?',
+      message: 'Effacer vos observations de votre téléphone ? (elles resteront sauvegardées sur le serveur)?',
       buttons: [
         {
           text: 'Annuler',

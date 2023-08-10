@@ -5,8 +5,8 @@
     </ion-buttons>
     <ion-title>Observation</ion-title>
     <ion-buttons slot="end" >
-      <ion-button (click)="valid()">
-        <ion-icon name="checkmark-outline" style="color:#196808;font-weight: bolder;"></ion-icon>
+      <ion-button (click)="valid()" fill="outline">
+        <ion-icon name="checkmark-outline" style="color:#5e8656;font-weight: bolder;"  ></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -56,7 +56,18 @@
           <ion-item *ngFor="let enum of datasmanager.getEspeces()">
             <ion-select-option   value={{enum.id}}>{{enum.value}}</ion-select-option>
           </ion-item>
+          <ion-item >
+            <ion-select-option value="0">Autre</ion-select-option>
+          </ion-item>
         </ion-select>
+      </ion-item>
+      <ion-item  *ngIf="obs.espece == 0">
+        <ion-label>Autre</ion-label>
+        <ion-input [(ngModel)]="obs.autre"></ion-input>
+      </ion-item>
+      <ion-item >
+        <ion-label>Nombre d'individus</ion-label>
+        <ion-input [(ngModel)]="obs.nbindividus" type="number">1</ion-input>
       </ion-item>
       <ion-item>
         <ion-label>Détermination</ion-label>
@@ -82,6 +93,8 @@
           </ion-item>
         </ion-select>
       </ion-item>
+
+      
       
       <ion-item  *ngIf="obs.animalMort == 2">
         <ion-label>Date d'échouage</ion-label>
@@ -101,7 +114,7 @@
           </ng-template>
         </ion-modal>
       </ion-item>
-
+      
       <ion-item  *ngIf="obs.animalMort == 1">
         <ion-label>Date de la mort</ion-label>
         <ion-datetime-button  datetime="dateAnimMort"></ion-datetime-button>

@@ -20,7 +20,7 @@ export class LoginPage implements OnInit {
   valid() {
     if ((this.auth.login == "admin") && (this.auth.pass=="ceta23"))
     {
-      this.router.navigateByUrl('/menu');
+      this.router.navigateByUrl('/map');
       this.invalidLogin = false;
     }
     else {

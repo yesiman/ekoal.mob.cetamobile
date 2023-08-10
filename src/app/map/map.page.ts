@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { GoogleMap, Marker } from '@capacitor/google-maps';
 import { environment } from 'src/environments/environment';
 import { datasManager } from '../services/datas.service';
+import { Geolocation } from '@capacitor/geolocation';
 import { PopoverController } from '@ionic/angular';
 import { MapopComponent } from './mapop/mapop.component';
 import { Platform } from '@ionic/angular';
@@ -24,30 +25,36 @@ export class MapPage implements OnInit {
   loadDeviceInfo = async () => {
     
   };
-
+  private lat;
+  private long;
+  private lng:number;
   ngOnInit() {
     setTimeout(() => {
       this.opacity = (this.platform.is("android")?"0":"1");
       this.newMap = null;
       this.datasmanager.getObservationsRef().subscribe(res => {
         this.observations = res;
+        
         this.createMap();
       }); 
     }, 250);
-
+  }
+  async getGeoloc() {
     
   }
-
   async createMap() {
     if (this.newMap == null) {
+      const coordinates = await Geolocation.getCurrentPosition({enableHighAccuracy:true});
+    this.lat = coordinates.coords.latitude;
+    this.long = coordinates.coords.longitude;
       this.newMap = await GoogleMap.create({
         id: 'my-cool-map',
         element: this.mapRef.nativeElement,
         apiKey: environment.gmapApiKey,
         config: {
           center: {
-            lat: 33.6,
-            lng: -117.9,
+            lat: this.lat,
+            lng: this.long,
           },
           zoom: 8,
           zoomControl:true,
@@ -70,7 +77,6 @@ export class MapPage implements OnInit {
           
           this.newMap.addMarker(mark).then((uid) => {
             obs.markerid = uid;
-            console.log(obs);
             this.markers.push(obs);
           });
           
@@ -101,21 +107,8 @@ export class MapPage implements OnInit {
         }
         
       });
-      /*
-      this.newMap.setOnMarkerDragListener(async (event) => {
-        this.lat = event.latitude.toString();
-        this.long = event.longitude.toString();
-      });
-      this.markersIds.push("marker");
-      */
-      this.newMap.setCamera({
-        coordinate: {
-          lat: Number("-18.766947"),
-          lng: Number("46.869107"),
-        },
-        zoom: 5,
-        bearing: 0
-      });
+      
+      
     }
     
   }

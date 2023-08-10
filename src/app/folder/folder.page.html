@@ -5,8 +5,8 @@
     </ion-buttons>
     <ion-title>Mes observations</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="removeAll()">
-        <ion-icon name="trash-outline"  color="danger"></ion-icon>
+      <ion-button (click)="removeAll()"  fill="outline">
+        <ion-icon name="trash-outline"  color="danger" ></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -21,7 +21,7 @@
   </ion-card>
       <ion-list>
         <ion-item button detail="true" *ngFor="let obs of observations" (click)="showObs(obs.id)">
-          <ion-thumbnail  *ngIf="obs.images.length>0" slot="start">
+          <ion-thumbnail  *ngIf="obs.images.length>0" slot="start">x
             <ion-img  [src]="obs.images[0].webPath"></ion-img>
           </ion-thumbnail>
           <ion-label>
