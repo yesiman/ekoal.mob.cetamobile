@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Firestore, collection, collectionData, doc, docData,getDoc, addDoc, deleteDoc, updateDoc,DocumentReference } from '@angular/fire/firestore';
 import { uploadManager } from '../services/uploadManager.service';
 import { datasManager } from '../services/datas.service';
-import { IonModal, LoadingController, ModalController } from '@ionic/angular'
+import { IonModal, LoadingController, ModalController, Platform } from '@ionic/angular'
 import { OverlayEventDetail } from '@ionic/core/components';
 import { ModalGmapComponent } from './modal-gmap/modal-gmap.component';
 @Component({
@@ -25,14 +25,18 @@ export class NewObsPage implements OnInit {
   private imageEdit:any = {};
   private id:number;
   public enums;
+  private viaMapPictLink = false;
   isModal = false;
+  opacity = "1";
   constructor(private router: Router,private firestore: Firestore,private activatedRoute: ActivatedRoute, 
-    private uploadmanager:uploadManager, private datasmanager:datasManager,private loadingCtrl: LoadingController,private modalCtrl: ModalController) {
+    private uploadmanager:uploadManager, private datasmanager:datasManager,private loadingCtrl: LoadingController,
+    private modalCtrl: ModalController,public platform: Platform) {
     
   }
   ngOnInit() {
     this.obs = {
       dateObs:new Date().toISOString(),
+      nbindividus:1,
       images:[]
     };
     
@@ -40,6 +44,13 @@ export class NewObsPage implements OnInit {
     this.enums = this.datasmanager.getEnums();
     this.activatedRoute.queryParams
       .subscribe(params => {
+        if (params.showPict) {
+          this.viaMapPictLink = true;
+          //ON VA SUR LE SEGMENT PHOTO
+          //OUVERTURE PHOTO
+          this.takePict();
+          //A LA FERMETURE REMETTRE FORMULAIRE
+        }
         if (params.uid) {
           const docRef = doc(this.firestore, "devices/"+this.uuid+"/observations/"+params.uid);
           const docSnap = getDoc(docRef).then((doc) => {
@@ -205,6 +216,7 @@ export class NewObsPage implements OnInit {
   async showModalGmap() {
 
     this.isModal = true;
+    this.opacity = (this.platform.is("android")?"0":"1");
 
     const modal = await this.modalCtrl.create({
       component: ModalGmapComponent,
@@ -226,6 +238,7 @@ export class NewObsPage implements OnInit {
         
       }
       this.isModal = false;
+      this.opacity = "1";
     });
 
     modal.present();

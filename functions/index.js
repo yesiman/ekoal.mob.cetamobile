@@ -24,6 +24,21 @@ exports.replicateForFo = functions.firestore
         }
       }
     }
+    //AJOUT DE LOBS DANS DATAS PUBLIQUES POUR MAP
+      //DATE
+      //COORDS
+      //IMAGES
+    let mapObj = {
+      uid:doc.uid,
+      dateObs:doc.dateObs,
+      lat:doc.lat,
+      long:doc.long,
+      espece:doc.espece
+    }
+    if (doc.images && (doc.images.length > 0)) {
+      mapObj.images = doc.images;
+    }
+    admin.firestore().collection("map").add(mapObj);
     //SI URLs ON ENVOIE SUR SERVEUR BO
     return axios.post('http://ns3192284.ip-5-39-73.eu/echouage/api/v1/sync/new',doc)
       .then(response => {

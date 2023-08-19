@@ -50,7 +50,7 @@ export class FolderPage implements OnInit {
           handler: () => {
             console.log(this.uuid);
             this.datasmanager.clearUserDatas();
-            this.router.navigateByUrl('/menu');
+            this.router.navigateByUrl('/map');
             //Vidage observations firebase
           },
         },

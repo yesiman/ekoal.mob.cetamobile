@@ -47,7 +47,6 @@ export class datasManager {
     })
     }
     loadDeviceInfos = async () => {
-      console.log("ldi");
        Device.getId().then((val) => {
         this.deviceUid = val.uuid;
         var promises = [];
@@ -105,8 +104,11 @@ export class datasManager {
       return collectionData(enumsRef, { idField: '_id'}) as Observable<Object[]>;
     }
     getObservationsRef(): Observable<Object[]> {
-      console.log("this.deviceUid",this.deviceUid);
       const observationsRef = collection(this.firestore, 'devices',this.deviceUid,'observations');
+      return collectionData(observationsRef, { idField: 'id'}) as Observable<Object[]>;
+    }
+    getAllObservationsRef(): Observable<Object[]> {
+      const observationsRef = collection(this.firestore, 'map');
       return collectionData(observationsRef, { idField: 'id'}) as Observable<Object[]>;
     }
     getDeviceUid() {      
@@ -147,7 +149,6 @@ export class datasManager {
     }
 
     getEnumLib(type,uid) {     
-      console.log(type,uid); 
       for (let reli = 0;reli < this.enums.length;reli++) 
       {
         if ((this.enums[reli].listId == type) && (this.enums[reli].id == uid))

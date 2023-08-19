@@ -6,6 +6,7 @@ import { Geolocation } from '@capacitor/geolocation';
 import { PopoverController } from '@ionic/angular';
 import { MapopComponent } from './mapop/mapop.component';
 import { Platform } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -21,7 +22,7 @@ export class MapPage implements OnInit {
   private uuid = "";
   public observations;
   public opacity;
-  constructor(private datasmanager:datasManager,public popoverController: PopoverController,public platform: Platform) { }
+  constructor(private datasmanager:datasManager,public popoverController: PopoverController,public platform: Platform,private router: Router) { }
   loadDeviceInfo = async () => {
     
   };
@@ -32,21 +33,21 @@ export class MapPage implements OnInit {
     setTimeout(() => {
       this.opacity = (this.platform.is("android")?"0":"1");
       this.newMap = null;
-      this.datasmanager.getObservationsRef().subscribe(res => {
+      this.datasmanager.getAllObservationsRef().subscribe(res => {
         this.observations = res;
         
         this.createMap();
       }); 
     }, 250);
   }
-  async getGeoloc() {
-    
+  goPict() {
+    this.router.navigateByUrl('/newobs?showPict=true');
   }
   async createMap() {
     if (this.newMap == null) {
       const coordinates = await Geolocation.getCurrentPosition({enableHighAccuracy:true});
-    this.lat = coordinates.coords.latitude;
-    this.long = coordinates.coords.longitude;
+      this.lat = coordinates.coords.latitude;
+      this.long = coordinates.coords.longitude;
       this.newMap = await GoogleMap.create({
         id: 'my-cool-map',
         element: this.mapRef.nativeElement,
@@ -66,6 +67,7 @@ export class MapPage implements OnInit {
       });
       for (var reli = 0;reli < this.observations.length;reli++)
       {
+        console.log(this.observations[reli]);
         let obs = this.observations[reli];
         if (obs.lat && obs.long) {
           var mark:Marker = {
@@ -74,7 +76,6 @@ export class MapPage implements OnInit {
               lng: Number(obs.long)
             }
           }
-          
           this.newMap.addMarker(mark).then((uid) => {
             obs.markerid = uid;
             this.markers.push(obs);

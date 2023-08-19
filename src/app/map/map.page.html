@@ -11,4 +11,10 @@
     <div style="width:100%;height:100%">
       <capacitor-google-map #map style="display: inline-block;width: 100%;height: 100%;"></capacitor-google-map>
     </div>
+
+    <ion-fab slot="fixed" vertical="bottom" horizontal="center">
+      <ion-fab-button color="success">
+        <ion-icon name="camera-outline" (click)="goPict()"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
 </ion-content>

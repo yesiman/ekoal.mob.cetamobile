@@ -1,6 +1,6 @@
 <ion-content  >
   <ion-item>
-    <ion-thumbnail  *ngIf="obs.images.length>0" slot="start">
+    <ion-thumbnail  *ngIf="obs.images && (obs.images.length>0)" slot="start">
       <ion-img  [src]="obs.images[0].webPath"></ion-img>
     </ion-thumbnail>
     <ion-label>
