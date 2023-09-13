@@ -73,7 +73,7 @@ export class datasManager {
               if (this.enums[reli].listId == "circonstances") { this.circonstances.push(this.enums[reli]); }
               if (this.enums[reli].listId == "regions") { this.regions.push(this.enums[reli]); }
               if (this.enums[reli].listId == "districts") { this.districts.push(this.enums[reli]); }
-              if (this.enums[reli].listId == "commmunes") { this.commmunes.push(this.enums[reli]); }
+              if (this.enums[reli].listId == "communes") { this.commmunes.push(this.enums[reli]); }
             }
             this.espece.sort((a,b) => a.value.localeCompare(b.value));
             this.sexe.sort((a,b) => a.value.localeCompare(b.value));

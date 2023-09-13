@@ -3,7 +3,8 @@ import { GoogleMap, Marker } from '@capacitor/google-maps';
 import { environment } from 'src/environments/environment';
 import { datasManager } from '../services/datas.service';
 import { Geolocation } from '@capacitor/geolocation';
-import { PopoverController } from '@ionic/angular';
+import type { Animation } from '@ionic/angular';
+import { AnimationController, IonCard, PopoverController } from '@ionic/angular';
 import { MapopComponent } from './mapop/mapop.component';
 import { Platform } from '@ionic/angular';
 import { Router } from '@angular/router';
@@ -22,20 +23,21 @@ export class MapPage implements OnInit {
   private uuid = "";
   public observations;
   public opacity;
-  constructor(private datasmanager:datasManager,public popoverController: PopoverController,public platform: Platform,private router: Router) { }
-  loadDeviceInfo = async () => {
+  constructor(public datasmanager:datasManager,public popoverController: PopoverController,public platform: Platform,private router: Router) { 
+
+  }
+  
     
-  };
+  
   private lat;
   private long;
   private lng:number;
   ngOnInit() {
+    
+    this.opacity = (this.platform.is("android")?"0":"1");
     setTimeout(() => {
-      this.opacity = (this.platform.is("android")?"0":"1");
-      this.newMap = null;
       this.datasmanager.getAllObservationsRef().subscribe(res => {
         this.observations = res;
-        
         this.createMap();
       }); 
     }, 250);
@@ -57,7 +59,7 @@ export class MapPage implements OnInit {
             lat: this.lat,
             lng: this.long,
           },
-          zoom: 8,
+          zoom: 10,
           zoomControl:true,
           scrollwheel: false,
           disableDoubleClickZoom: true,
@@ -87,7 +89,7 @@ export class MapPage implements OnInit {
         for (let reliMarks = 0;reliMarks < this.markers.length;reliMarks++) 
         {
           if (this.markers[reliMarks].markerid == marker.markerId) {
-
+            
             const popover = await this.popoverController.create({
               component:MapopComponent,
               cssClass: 'popover-class',
@@ -98,7 +100,7 @@ export class MapPage implements OnInit {
                 lat: marker.latitude,
                 lng: marker.longitude,
               },
-              zoom: 10,
+              zoom: 20,
               bearing: 0
             });
             await popover.present();

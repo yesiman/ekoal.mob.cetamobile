@@ -188,7 +188,7 @@
         <ion-label>Commune</ion-label>
         <ion-select placeholder="Selection" [(ngModel)]="obs.commune">
           <ion-item *ngFor="let enum of datasmanager.getCommmunes()">
-            <ion-select-option  *ngIf="(enum.district.id == obs.district)" value={{enum.id}}>{{enum.value}}</ion-select-option>
+            <ion-select-option *ngIf="(enum.district.id == obs.district)"  value={{enum.id}}>{{enum.value}}</ion-select-option>
           </ion-item>
         </ion-select>
       </ion-item>

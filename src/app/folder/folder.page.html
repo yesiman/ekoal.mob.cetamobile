@@ -21,7 +21,7 @@
   </ion-card>
       <ion-list>
         <ion-item button detail="true" *ngFor="let obs of observations" (click)="showObs(obs.id)">
-          <ion-thumbnail  *ngIf="obs.images.length>0" slot="start">x
+          <ion-thumbnail  *ngIf="obs.images.length>0" slot="start">
             <ion-img  [src]="obs.images[0].webPath"></ion-img>
           </ion-thumbnail>
           <ion-label>
